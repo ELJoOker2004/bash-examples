@@ -1,0 +1,44 @@
+#!/bin/bash
+
+length=$1
+shift
+options=$@
+
+chars_small="abcdefghijklmnopqrstuvwxyz"
+chars_capital="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+numbers="0123456789"
+special="!@#$%^&*()_+."
+
+chars=""
+
+for option in $options; do
+    case $option in
+        -l)
+            chars+=$chars_small
+            ;;
+        -u)
+            chars+=$chars_capital
+            ;;
+        -n)
+            chars+=$numbers
+            ;;
+        -s)
+            chars+=$special
+            ;;
+        *)
+            echo "Invalid option: $option. Use -l for lowercase, -u for uppercase, -n for numbers, -s for special characters."
+            exit 1
+            ;;
+    esac
+done
+
+password=""
+for ((i = 1; i <= length; i++)); do
+    password+="${chars:RANDOM%${#chars}:1}"
+done
+if [ -z $@ ]
+then
+    echo "This tool generates a random password."
+    echo "Usage: password_gen.sh <number of characters for password> options[specify atleast one]: -l for lowercase, -u for uppercase, -n for numbers, -s for special characters."
+fi
+echo "$password"
