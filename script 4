@@ -1,0 +1,28 @@
+#!/bin/bash
+
+file=$1
+
+if [ $1 == *.jpg ] || [ $1 == *.png ] || [ $1 == *.jpeg ] #you can add more images extentions as you want
+then
+    if [ !./data ]
+    then
+    mkdir $1_data
+    fi
+    mediainfo $1
+    echo "exiftool output will be in data folder"
+    exiftool $1 > ./$1data/meta_data
+    read -p "enter 1 if you want to see strings tool data too or press CTRL + C to exit: " choice
+    if [ $choice == '1' ]
+    then
+        strings $1
+    fi
+else
+    if [ !./data ]
+    then
+    mkdir $1_data
+    fi
+    mediainfo $1
+    echo "exiftool output will be in data folder alongside with strings tool output"
+    strings $1 > ./$1data/strings
+    exiftool $1 > ./$1data/meta_data
+fi
