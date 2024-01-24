@@ -1,0 +1,26 @@
+#!/bin/bash
+path=$1
+if [ -n "$path" ] && [[ "$path" == *.ovpn ]]
+then
+    warp-cli connect >/dev/null
+    sleep 1
+    if  ping -q -c 1 -W 1 192.168.1.1 >/dev/null; 
+    then 
+        echo "warp connected"
+        sudo openvpn "$path" >/dev/null &   
+        sleep 5
+        if  ping -q -c 1 -W 1 192.168.1.1 >/dev/null && ping 10.10.10.10 -c 3 >/dev/null;
+        then 
+            echo "openvpn connected and internet check succeed"
+            warp-cli disconnect >/dev/null
+            echo "warp disconnected"
+            echo "You are now ready to connect to TryHackMe machines"
+        else
+            echo "error in openvpn"
+        fi
+    else
+        echo "warp error , you are most likely not connected to the internet"
+    fi
+else
+    echo "enter a correct openvpn access file path (.opvn) file"
+fi
