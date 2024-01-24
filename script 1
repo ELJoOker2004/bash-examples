@@ -1,0 +1,25 @@
+#!/bin/bash
+path=$1
+if [ -z "$path" ]
+then 
+    echo "Enter the file path"
+    exit
+fi
+
+if [[ "$path" == /* ]]; then
+	echo -n "file permissions:" 
+    stat "$path" | grep "Uid" | cut -d":" -f2-
+    echo -n "file type:"
+    stat "$path" | grep "IO" | awk '{print $NF}'
+ 	echo -n "file size:"
+ 	stat "$path" | grep "IO" | cut -d " " -f4
+
+else
+	echo -n "file permissions:" 
+    stat "./$path" | grep "Uid" | cut -d":" -f2-
+    echo -n "file type:"
+    stat "./$path" | grep "IO" | awk '{print $NF}'
+ 	echo -n "file size:"
+ 	stat "./$path" | grep "IO" | cut -d " " -f4 | sed 's/$/ bytes/'
+ 	
+fi
