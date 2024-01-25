@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 domain_file , iterations , output file"
+    exit 1
+fi
+
+file=$1
+depth=$2
+output=$3
+while IFS= read -r domain
+do
+    regex="^[a-zA-Z0-9-]+\\."
+    for ((i = 1; i < $depth; i++)); do
+        regex+="[a-zA-Z0-9-]+\\."
+    done
+    regex+="$domain"
+    echo "========================================" >>$output
+    echo "                 $domain" >> $output
+    echo "========================================" >>$output
+    results=$(subfinder -d "$domain" | grep -P "$regex")
+    echo "$results" >> $output
+    count=$(($(echo "$results" | wc -l)))
+    echo "Total subdomains filtered for $domain: $count"
+done < "$file"
